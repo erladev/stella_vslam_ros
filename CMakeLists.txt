@@ -128,6 +128,17 @@ find_package(tf2_geometry_msgs REQUIRED)
 find_package(tf2_msgs REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(rosbag2_cpp REQUIRED)
+find_package(pcl_ros REQUIRED)
+find_package(pcl_msgs REQUIRED)
+find_package(pcl_conversions REQUIRED)
+
+# include_directories(${pcl_ros_INCLUDE_DIRS})
+
+include_directories(${pcl_msgs_INCLUDE_DIRS})
+
+# point cloud library PCL
+find_package(PCL REQUIRED)
+include_directories(${PCL_INCLUDE_DIRS})
 
 # thread library
 find_package(Threads REQUIRED)
@@ -243,7 +254,11 @@ ament_target_dependencies(stella_vslam_ros_system
   tf2_eigen
   tf2_geometry_msgs
   tf2_msgs
-  tf2_ros)
+  tf2_ros
+  PCL
+  pcl_ros
+  pcl_msgs
+  pcl_conversions)
 target_link_libraries(stella_vslam_ros_system PRIVATE
   yaml-cpp
   stella_vslam::stella_vslam)
