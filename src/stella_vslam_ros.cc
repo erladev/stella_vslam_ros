@@ -7,8 +7,11 @@
 #include <tf2_eigen/tf2_eigen.hpp>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 #include <geometry_msgs/msg/transform_stamped.h>
-//#include <pcl_ros/pcl_ros/point_cloud.hpp>
-#include <pcl_conversions/pcl_conversions/pcl_conversions.h>
+#include <pcl_conversions/pcl_conversions.h>
+#include <pcl/conversions.h>
+#include <pcl/point_types.h>
+
+#include <sensor_msgs/msg/point_cloud2.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <Eigen/Geometry>
@@ -124,19 +127,23 @@ void system::publish_pointcloud(const rclcpp::Time& stamp) {
     std::vector<std::shared_ptr<stella_vslam::data::landmark>> landmarks;
     std::set<std::shared_ptr<stella_vslam::data::landmark>> local_landmarks;
     slam_->get_map_publisher()->get_landmarks(landmarks, local_landmarks);
-    /*pcl::PointCloud<pcl::PointXYZ> points;
-    for (const auto lm : landmarks) {
+    
+    pcl::PointCloud<pcl::PointXYZ> points;
+    for (const auto &lm : landmarks) {
         if (!lm || lm->will_be_erased()) {
             continue;
         }
         const Eigen::Vector3d pos_w = rot_ros_to_cv_map_frame_ * lm->get_pos_in_world();
         points.push_back(pcl::PointXYZ(pos_w.x(), pos_w.y(), pos_w.z()));
     }
-    sensor_msgs::PointCloud2 pcout;
-    pcl::toROSMsg(points, pcout);
+    pcl::PCLPointCloud2 pcl_pc2;
+    sensor_msgs::msg::PointCloud2 pcout;
+    pcl::toPCLPointCloud2(points, pcl_pc2);
+    pcl_conversions::fromPCL(pcl_pc2, pcout);
+    //pcl::toROSMsg(points, pcout);
     pcout.header.frame_id = map_frame_;
     pcout.header.stamp = stamp;
-    pc_pub_.publish(pcout);*/
+    // pc_pub_.publish(pcout); //TODO
 }
 
 void system::setParams() {

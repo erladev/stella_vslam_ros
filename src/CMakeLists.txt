@@ -57,7 +57,7 @@ foreach(EXECUTABLE_TARGET IN LISTS EXECUTABLE_TARGETS)
 
     # build
     target_include_directories(${EXECUTABLE_TARGET}
-                               PRIVATE ${rclcpp_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS})
+                               PRIVATE ${rclcpp_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS} ${PCL_INCLUDE_DIRS} ${pcl_ros_INCLUDE_DIRS} ${pcl_msgs_INCLUDE_DIRS})
     target_link_libraries(${EXECUTABLE_TARGET}
                           PRIVATE stella_vslam::stella_vslam ${rclcpp_LIBRARIES} ${OpenCV_LIBRARIES})
     ament_target_dependencies(${EXECUTABLE_TARGET}

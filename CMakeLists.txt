@@ -139,6 +139,7 @@ include_directories(${pcl_msgs_INCLUDE_DIRS})
 # point cloud library PCL
 find_package(PCL REQUIRED)
 include_directories(${PCL_INCLUDE_DIRS})
+add_definitions(${PCL_DEFINITIONS})
 
 # thread library
 find_package(Threads REQUIRED)
