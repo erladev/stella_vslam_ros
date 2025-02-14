@@ -37,6 +37,7 @@ system::system(const std::shared_ptr<stella_vslam::system>& slam,
       pose_pub_(node_->create_publisher<nav_msgs::msg::Odometry>("~/camera_pose", 1)),
       keyframes_pub_(node_->create_publisher<geometry_msgs::msg::PoseArray>("~/keyframes", 1)),
       keyframes_2d_pub_(node_->create_publisher<geometry_msgs::msg::PoseArray>("~/keyframes_2d", 1)),
+      pointcloud_pub_(node->create_publisher<sensor_msgs::msg::PointCloud2>("~/pointcloud", 1)),
       map_to_odom_broadcaster_(std::make_shared<tf2_ros::TransformBroadcaster>(node_)),
       tf_(std::make_unique<tf2_ros::Buffer>(node_->get_clock())),
       transform_listener_(std::make_shared<tf2_ros::TransformListener>(*tf_)) {
@@ -144,6 +145,7 @@ void system::publish_pointcloud(const rclcpp::Time& stamp) {
     pcout.header.frame_id = map_frame_;
     pcout.header.stamp = stamp;
     // pc_pub_.publish(pcout); //TODO
+    pointcloud_pub_.publish(pcout);
 }
 
 void system::setParams() {
@@ -167,6 +169,9 @@ void system::setParams() {
 
     publish_keyframes_ = true;
     publish_keyframes_ = node_->declare_parameter("publish_keyframes", publish_keyframes_);
+
+    publish_pointcloud_ = true;
+    publish_pointcloud_ = node_->declare_parameter("publish_pointcloud", publish_pointcloud_);
 
     transform_tolerance_ = 0.5;
     transform_tolerance_ = node_->declare_parameter("transform_tolerance", transform_tolerance_);
@@ -271,6 +276,9 @@ void mono::callback(sensor_msgs::msg::Image::UniquePtr msg_unique_ptr) {
     }
     if (publish_keyframes_) {
         publish_keyframes(msg->header.stamp);
+    }
+    if (publish_pointcloud_) {
+        publish_pointcloud(msg->header.stamp);
     }
 }
 
