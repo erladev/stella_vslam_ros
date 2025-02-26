@@ -141,11 +141,9 @@ void system::publish_pointcloud(const rclcpp::Time& stamp) {
     sensor_msgs::msg::PointCloud2 pcout;
     pcl::toPCLPointCloud2(points, pcl_pc2);
     pcl_conversions::fromPCL(pcl_pc2, pcout);
-    //pcl::toROSMsg(points, pcout);
     pcout.header.frame_id = map_frame_;
     pcout.header.stamp = stamp;
-    // pc_pub_.publish(pcout); //TODO
-    pointcloud_pub_.publish(pcout);
+    pointcloud_pub_->publish(pcout);
 }
 
 void system::setParams() {
